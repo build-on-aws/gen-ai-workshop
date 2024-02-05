@@ -1,0 +1,35 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Agent AWS API",
+        "version": "1.0.0",
+        "description": "APIs helpeing customers with data processing tasks, using the connected database."
+    },
+    "paths": {
+        "/get_num_records": {
+            "get": {
+                "summary": "Get the number of records in the database.",
+                "description": "Get the number of records in the database.",
+                "operationId": "getNumRecords",                
+                "responses": {
+                    "200": {
+                        "description": "Get the number of records in the database",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "answer": {
+                                            "type": "string",
+                                            "description": "The number of records in the database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
