@@ -6,7 +6,7 @@ This workshop is designed for builders ready to learn about generative AI on AWS
 
 In this workshop you will complete the following 3 modules:
 
-1. **Build Generativie AI Applications with PartyRock:** Learn how to quickly build generative AI applications with no code.
+1. **Build Generative AI Applications with PartyRock:** Learn how to quickly build generative AI applications with no code.
 
 2. **Use Foundation Models in Amazon Bedrock:** Learn how to use various foundation models to generate text and images using Amazon Bedrock.
 
