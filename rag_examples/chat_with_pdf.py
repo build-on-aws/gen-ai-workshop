@@ -90,6 +90,6 @@ def rag_with_bedrock(query):
     return call_claude(prompt)
 
 
-query = "What can you tell me about S3 buckets?"
+query = "What can you tell me about Amazon RDS?"
 print(query)
 print(rag_with_bedrock(query))
