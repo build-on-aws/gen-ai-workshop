@@ -1,5 +1,6 @@
 import boto3
 import json
+import time
 
 # Setup bedrock
 bedrock_runtime = boto3.client(
@@ -19,7 +20,7 @@ def call_ai21(prompt):
 
     body = json.dumps(prompt_config)
 
-    modelId = "ai21.j2-mid"
+    modelId = "ai21.j2-ultra-v1"
     accept = "application/json"
     contentType = "application/json"
 
@@ -113,7 +114,6 @@ def call_titan(prompt):
     return results
 
 
-# Call llama2 model
 def call_llama2(prompt):
     prompt_config = {
         "prompt": prompt,
@@ -124,7 +124,7 @@ def call_llama2(prompt):
 
     body = json.dumps(prompt_config)
 
-    modelId = "meta.llama2-70b-chat-v1"
+    modelId = "meta.llama2-13b-chat-v1"
     accept = "application/json"
     contentType = "application/json"
 
@@ -150,7 +150,6 @@ def sentiment_analysis(text):
     """
     Function to return a JSON object of sentiment from a given text.
     """
-    # TODO
     prompt = f"Giving the following text, return a JSON object of sentiment analysis. text: {text} "
     result = call_claude(prompt)
     return result
@@ -172,10 +171,12 @@ if __name__ == "__main__":
     print("\n=== Summarization Example ===")
     summary = summarize_text(text)
     print(f"Summary:\n {summary}")
+    time.sleep(2)
 
     print("\n=== Sentiment Analysis Example ===")
     sentiment_analysis_json = sentiment_analysis(text)
     print(f"Sentiment_Analysis JSON:\n{sentiment_analysis_json}")
+    time.sleep(2)
 
     print("\n=== Q&A Example ===")
 
@@ -183,11 +184,13 @@ if __name__ == "__main__":
     print(q1)
     answer = perform_qa(q1, text)
     print(f"Answer: {answer}")
+    time.sleep(2)
 
     q2 = "Can Amazon Bedrock support RAG?"
     print(q2)
     answer = perform_qa(q2, text)
     print(f"Answer: {answer}")
+    time.sleep(2)
 
     q3 = "When was Amzozn Bedrock announced?"
     print(q3)

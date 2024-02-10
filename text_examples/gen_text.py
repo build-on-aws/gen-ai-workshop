@@ -1,12 +1,11 @@
 import boto3
 import json
-
-REGION = "us-west-2"
+import time
 
 # Setup bedrock
 bedrock_runtime = boto3.client(
     service_name="bedrock-runtime",
-    region_name=REGION,
+    region_name="us-west-2",
 )
 
 
@@ -21,7 +20,7 @@ def call_ai21(prompt):
 
     body = json.dumps(prompt_config)
 
-    modelId = "ai21.j2-mid"
+    modelId = "ai21.j2-ultra-v1"
     accept = "application/json"
     contentType = "application/json"
 
@@ -125,7 +124,7 @@ def call_llama2(prompt):
 
     body = json.dumps(prompt_config)
 
-    modelId = "meta.llama2-70b-chat-v1"
+    modelId = "meta.llama2-13b-chat-v1"
     accept = "application/json"
     contentType = "application/json"
 
@@ -142,7 +141,7 @@ def summarize_text(text):
     """
     Function to summarize text using a generative AI model.
     """
-    prompt = f"Summarize the following text: {text}"
+    prompt = f"Summarize the following text in 50 words or less: {text}"
     result = call_titan(prompt)
     return result
 
@@ -151,8 +150,7 @@ def sentiment_analysis(text):
     """
     Function to return a JSON object of sentiment from a given text.
     """
-    # TODO
-    # Can you write a prompt to help answer these questions?
+    # TODO Can you write a prompt to help answer these questions?
     result = None
     return result
 
@@ -161,9 +159,7 @@ def perform_qa(question, text):
     """
     Function to perform a Q&A operation based on the provided text.
     """
-    # TODO
-    # Can you write a prompt to help answer these questions?
-
+    # TODO Can you write a prompt to help answer these questions?
     result = None
     return result
 
@@ -175,10 +171,12 @@ if __name__ == "__main__":
     print("\n=== Summarization Example ===")
     summary = summarize_text(text)
     print(f"Summary:\n {summary}")
+    time.sleep(2)
 
     print("\n=== Sentiment Analysis Example ===")
     sentiment_analysis_json = sentiment_analysis(text)
     print(f"Sentiment_Analysis JSON:\n{sentiment_analysis_json}")
+    time.sleep(2)
 
     print("\n=== Q&A Example ===")
 
@@ -186,11 +184,13 @@ if __name__ == "__main__":
     print(q1)
     answer = perform_qa(q1, text)
     print(f"Answer: {answer}")
+    time.sleep(2)
 
     q2 = "Can Amazon Bedrock support RAG?"
     print(q2)
     answer = perform_qa(q2, text)
     print(f"Answer: {answer}")
+    time.sleep(2)
 
     q3 = "When was Amzozn Bedrock announced?"
     print(q3)

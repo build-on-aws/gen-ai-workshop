@@ -3,7 +3,7 @@ import random
 
 
 AGENT_ID = "INSERT_AGENT_ID"
-QUERY = "What can you tell me about S3 buckets?"
+QUERY = "What are some features of Amazon S3?"
 REGION = "us-west-2"
 
 # Setup bedrock

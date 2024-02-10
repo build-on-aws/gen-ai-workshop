@@ -1,7 +1,7 @@
 import boto3
 
 KB_ID = "TODO"
-QUERY = "What can you tell me about S3?"
+QUERY = "What can you tell me about Amazon EC2?"
 REGION = "us-west-2"
 MODEL = "anthropic.claude-v2:1"
 NUM_RESULTS = 10
