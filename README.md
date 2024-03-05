@@ -14,7 +14,7 @@ In this workshop you will complete the following 3 modules:
 
 This is a 300 level workshop, so some familiarly with using services such as AWS Lambda and writing Python code is helpful. No AI/ML experience is necessary. This workshop is intended to be finished within 2 hours.
 
-Here is the link to the [workshop](TODO)
+Here is the link to the [workshop](https://catalog.workshops.aws/building-gen-ai-apps/en-US)
 
 ## Security
 
