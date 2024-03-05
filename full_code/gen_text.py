@@ -9,6 +9,52 @@ bedrock_runtime = boto3.client(
 )
 
 
+# Call Mistral model
+def call_mistral_8x7b(prompt):
+    prompt_config = {
+        "prompt": prompt,
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0.8
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "mistral.mixtral-8x7b-instruct-v0:1"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body.get("outputs")[0].get("text")
+    return results
+
+# Call Mistral model
+def call_mistral_7b(prompt):
+    prompt_config = {
+        "prompt": prompt,
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 0.8
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "mistral.mistral-7b-instruct-v0:2"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body.get("outputs")[0].get("text")
+    return results
+
 # Call AI21 labs model
 def call_ai21(prompt):
     prompt_config = {
@@ -36,6 +82,33 @@ def call_ai21(prompt):
 def claude_prompt_format(prompt: str) -> str:
     # Add headers to start and end of prompt
     return "\n\nHuman: " + prompt + "\n\nAssistant:"
+
+def call_claude_sonet(prompt):
+
+    prompt_config = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 4096,
+        "messages": [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": prompt},
+            ],
+        }],
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body.get("content")[0].get("text")
+    return results
 
 
 # Call Claude model
@@ -151,7 +224,7 @@ def sentiment_analysis(text):
     Function to return a JSON object of sentiment from a given text.
     """
     prompt = f"Giving the following text, return a JSON object of sentiment analysis. text: {text} "
-    result = call_claude(prompt)
+    result = call_mistral_8x7b(prompt)
     return result
 
 
@@ -160,7 +233,7 @@ def perform_qa(question, text):
     Function to perform a Q&A operation based on the provided text.
     """
     prompt = f"Given the following text, answer the question. If the answer is not in the text, 'say you do not know': {question} text: {text} "
-    result = call_llama2(prompt)
+    result = call_claude(prompt)
     return result
 
 
