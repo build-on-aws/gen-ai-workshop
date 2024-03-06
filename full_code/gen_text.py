@@ -265,7 +265,7 @@ if __name__ == "__main__":
     print(f"Answer: {answer}")
     time.sleep(2)
 
-    q3 = "When was Amzozn Bedrock announced?"
+    q3 = "When was Amazon Bedrock announced?"
     print(q3)
     answer = perform_qa(q3, text)
     print(f"Answer: {answer}")
