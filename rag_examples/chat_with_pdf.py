@@ -17,36 +17,35 @@ bedrock_runtime = boto3.client(
     region_name="us-west-2",
 )
 
+
 def chunk_doc_to_text(doc_loc: str):
     loader = UnstructuredFileLoader(doc_loc)
     docs = loader.load()
 
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=20
-    )
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
     texts = text_splitter.split_documents(docs)
 
     return texts
 
 
-def claude_prompt_format(prompt: str) -> str:
-    # Add headers to start and end of prompt
-    return "\n\nHuman: " + prompt + "\n\nAssistant:"
+def call_claude_sonnet(prompt):
 
-# Call Claude model
-def call_claude(prompt):
     prompt_config = {
-        "prompt": claude_prompt_format(prompt),
-        "max_tokens_to_sample": 4096,
-        "temperature": 0.5,
-        "top_k": 250,
-        "top_p": 0.5,
-        "stop_sequences": [],
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 4096,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                ],
+            }
+        ],
     }
 
     body = json.dumps(prompt_config)
 
-    modelId = "anthropic.claude-v2:1"
+    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
     accept = "application/json"
     contentType = "application/json"
 
@@ -55,7 +54,7 @@ def call_claude(prompt):
     )
     response_body = json.loads(response.get("body").read())
 
-    results = response_body.get("completion")
+    results = response_body.get("content")[0].get("text")
     return results
 
 
@@ -68,10 +67,14 @@ def rag_with_bedrock(query):
     pdf_loc = "well_arch.pdf"
 
     if os.path.exists("local_index"):
-        local_vector_store = FAISS.load_local("local_index", embeddings)
-    else:   
+        local_vector_store = FAISS.load_local(
+            "local_index", embeddings, allow_dangerous_deserialization=True
+        )
+    else:
         texts = chunk_doc_to_text(pdf_loc)
-        local_vector_store = FAISS.from_documents(texts, embeddings)
+        local_vector_store = FAISS.from_documents(
+            texts, embeddings, allow_dangerous_deserialization=True
+        )
         local_vector_store.save_local("local_index")
 
     docs = local_vector_store.similarity_search(query)
@@ -87,7 +90,7 @@ def rag_with_bedrock(query):
     Question: {query}
     Answer:"""
 
-    return call_claude(prompt)
+    return call_claude_sonnet(prompt)
 
 
 query = "What can you tell me about Amazon RDS?"

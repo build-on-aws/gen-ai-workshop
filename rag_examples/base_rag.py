@@ -26,25 +26,24 @@ sentences = [
 ]
 
 
-def claude_prompt_format(prompt: str) -> str:
-    # Add headers to start and end of prompt
-    return "\n\nHuman: " + prompt + "\n\nAssistant:"
+def call_claude_sonnet(prompt):
 
-
-# Call Claude model
-def call_claude(prompt):
     prompt_config = {
-        "prompt": claude_prompt_format(prompt),
-        "max_tokens_to_sample": 4096,
-        "temperature": 0.5,
-        "top_k": 250,
-        "top_p": 0.5,
-        "stop_sequences": [],
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 4096,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                ],
+            }
+        ],
     }
 
     body = json.dumps(prompt_config)
 
-    modelId = "anthropic.claude-v2:1"
+    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
     accept = "application/json"
     contentType = "application/json"
 
@@ -53,7 +52,7 @@ def call_claude(prompt):
     )
     response_body = json.loads(response.get("body").read())
 
-    results = response_body.get("completion")
+    results = response_body.get("content")[0].get("text")
     return results
 
 
@@ -77,7 +76,7 @@ def rag_with_bedrock(query):
     Question: {query}
     Answer:"""
 
-    return call_claude(prompt)
+    return call_claude_sonnet(prompt)
 
 
 query = "What type of pet do I have?"
