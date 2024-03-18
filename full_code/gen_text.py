@@ -83,7 +83,7 @@ def claude_prompt_format(prompt: str) -> str:
     # Add headers to start and end of prompt
     return "\n\nHuman: " + prompt + "\n\nAssistant:"
 
-def call_claude_sonet(prompt):
+def call_claude_sonnet(prompt):
 
     prompt_config = {
         "anthropic_version": "bedrock-2023-05-31",
@@ -233,7 +233,7 @@ def perform_qa(question, text):
     Function to perform a Q&A operation based on the provided text.
     """
     prompt = f"Given the following text, answer the question. If the answer is not in the text, 'say you do not know': {question} text: {text} "
-    result = call_claude(prompt)
+    result = call_claude_sonnet(prompt)
     return result
 
 

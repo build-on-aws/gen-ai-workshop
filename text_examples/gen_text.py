@@ -85,7 +85,7 @@ def claude_prompt_format(prompt: str) -> str:
 
 
 # Call Claude model
-def call_claude_sonet(prompt):
+def call_claude_sonnet(prompt):
 
     prompt_config = {
         "anthropic_version": "bedrock-2023-05-31",
