@@ -90,12 +90,12 @@ def call_claude_sonnet(prompt):
     prompt_config = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 4096,
-        "messages": {
+        "messages": [{
             "role": "user",
             "content": [
                 {"type": "text", "text": prompt},
             ],
-        },
+        }],
     }
 
     body = json.dumps(prompt_config)
@@ -109,7 +109,7 @@ def call_claude_sonnet(prompt):
     )
     response_body = json.loads(response.get("body").read())
 
-    results = response_body.get("completion")
+    results = response_body.get("content")[0].get("text")
     return results
 
 # Call Claude model
