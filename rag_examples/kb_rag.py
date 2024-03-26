@@ -3,7 +3,7 @@ import boto3
 KB_ID = "TODO"
 QUERY = "What can you tell me about Amazon EC2?"
 REGION = "us-west-2"
-MODEL = "anthropic.claude-v2:1"
+MODEL = "anthropic.claude-3-sonnet-20240229-v1:0"
 NUM_RESULTS = 10
 
 # Setup bedrock
@@ -34,7 +34,6 @@ text_response = bedrock_agent_runtime.retrieve_and_generate(
         },
     },
 )
-
+# for citation in text_response["citations"]:
+#     print(f"Citation:\n{citation}\n")
 print(f"Output:\n{text_response['output']['text']}\n")
-for citation in text_response["citations"]:
-    print(f"Citation:\n{citation}\n")
