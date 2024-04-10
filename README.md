@@ -10,7 +10,7 @@ In this workshop you will complete the following 3 modules:
 
 2. **Use Foundation Models in Amazon Bedrock:** Learn how to use various foundation models to generate text and images using Amazon Bedrock.
 
-3. **Chat with your Doucments:** Learn how to use Amazon Bedrock to "Chat with your documents". We will explore how to build RAG applications highlighting knowledge bases, embeddings, and agents.
+3. **Chat with your Documents:** Learn how to use Amazon Bedrock to "Chat with your documents". We will explore how to build RAG applications highlighting knowledge bases, embeddings, and agents.
 
 This is a 300 level workshop, so some familiarly with using services such as AWS Lambda and writing Python code is helpful. No AI/ML experience is necessary. This workshop is intended to be finished within 2 hours.
 
