@@ -57,7 +57,7 @@ def generate_image_sd(bedrock_client, text, style):
 
     body = json.dumps(body)
 
-    modelId = "stability.stable-diffusion-xl"
+    modelId = "stability.stable-diffusion-xl-v1"
     accept = "application/json"
     contentType = "application/json"
 

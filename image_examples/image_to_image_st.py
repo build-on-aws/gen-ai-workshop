@@ -71,7 +71,7 @@ def sd_update_image(change_prompt, init_image_b64):
 
     body = json.dumps(body)
 
-    modelId = "stability.stable-diffusion-xl"
+    modelId = "stability.stable-diffusion-xl-v1"
     accept = "application/json"
     contentType = "application/json"
 
