@@ -15,7 +15,7 @@ def call_mistral_8x7b(prompt):
         "prompt": prompt,
         "max_tokens": 4096,
         "temperature": 0.7,
-        "top_p": 0.8
+        "top_p": 0.8,
     }
 
     body = json.dumps(prompt_config)
@@ -32,13 +32,14 @@ def call_mistral_8x7b(prompt):
     results = response_body.get("outputs")[0].get("text")
     return results
 
+
 # Call Mistral model
 def call_mistral_7b(prompt):
     prompt_config = {
         "prompt": prompt,
         "max_tokens": 4096,
         "temperature": 0.7,
-        "top_p": 0.8
+        "top_p": 0.8,
     }
 
     body = json.dumps(prompt_config)
@@ -54,6 +55,7 @@ def call_mistral_7b(prompt):
 
     results = response_body.get("outputs")[0].get("text")
     return results
+
 
 # Call AI21 labs model
 def call_ai21(prompt):
@@ -83,17 +85,20 @@ def claude_prompt_format(prompt: str) -> str:
     # Add headers to start and end of prompt
     return "\n\nHuman: " + prompt + "\n\nAssistant:"
 
+
 def call_claude_sonnet(prompt):
 
     prompt_config = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 4096,
-        "messages": [{
-            "role": "user",
-            "content": [
-                {"type": "text", "text": prompt},
-            ],
-        }],
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                ],
+            }
+        ],
     }
 
     body = json.dumps(prompt_config)
@@ -210,6 +215,92 @@ def call_llama2(prompt):
     return results
 
 
+def call_llama3_70b(prompt):
+
+    llama_prompt = f"""
+<|begin_of_text|>
+<|start_header_id|>user<|end_header_id|>
+{prompt}
+<|eot_id|>
+"""
+
+    prompt_config = {
+        "prompt": llama_prompt,
+        "max_gen_len": 2048,
+        "top_p": 0.9,
+        "temperature": 0.7,
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "meta.llama3-70b-instruct-v1:0"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body["generation"].strip()
+    return results
+
+
+def call_llama3_8b(prompt):
+
+    llama_prompt = f"""
+<|begin_of_text|>
+<|start_header_id|>user<|end_header_id|>
+{prompt}
+<|eot_id|>
+"""
+
+    prompt_config = {
+        "prompt": llama_prompt,
+        "max_gen_len": 2048,
+        "top_p": 0.9,
+        "temperature": 0.7,
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "meta.llama3-8b-instruct-v1:0"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body["generation"].strip()
+    return results
+
+
+def call_command_r_plus(prompt):
+
+    prompt_config = {
+        "message": prompt,
+        "max_tokens": 4096,
+        "chat_history": [],
+        "temperature": 0.7,
+    }
+
+    body = json.dumps(prompt_config)
+
+    modelId = "cohere.command-r-plus-v1:0"
+    accept = "application/json"
+    contentType = "application/json"
+
+    response = bedrock_runtime.invoke_model(
+        body=body, modelId=modelId, accept=accept, contentType=contentType
+    )
+    response_body = json.loads(response.get("body").read())
+
+    results = response_body.get("text")
+    return results
+
+
 def summarize_text(text):
     """
     Function to summarize text using a generative AI model.
@@ -224,7 +315,7 @@ def sentiment_analysis(text):
     Function to return a JSON object of sentiment from a given text.
     """
     prompt = f"Giving the following text, return a JSON object of sentiment analysis. text: {text} "
-    result = call_mistral_8x7b(prompt)
+    result = call_llama3_70b(prompt)
     return result
 
 
