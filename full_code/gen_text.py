@@ -1,6 +1,6 @@
-import boto3
-import json
 import time
+
+import boto3
 
 # Setup bedrock
 bedrock_runtime = boto3.client(
@@ -9,304 +9,81 @@ bedrock_runtime = boto3.client(
 )
 
 
-# Call Mistral model
-def call_mistral_8x7b(prompt):
-    prompt_config = {
-        "prompt": prompt,
-        "max_tokens": 4096,
-        "temperature": 0.7,
-        "top_p": 0.8,
-    }
+def generate_conversation(model_id, system_prompts, messages):
+    """
+    Sends messages to a model.
+    Args:
+        bedrock_client: The Boto3 Bedrock runtime client.
+        model_id (str): The model ID to use.
+        system_prompts (JSON) : The system prompts for the model to use.
+        messages (JSON) : The messages to send to the model.
 
-    body = json.dumps(prompt_config)
+    Returns:
+        response (JSON): The conversation that the model generated.
 
-    modelId = "mistral.mixtral-8x7b-instruct-v0:1"
-    accept = "application/json"
-    contentType = "application/json"
+    """
 
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
+    print(f"Generating message with model {model_id}")
+
+    # Inference parameters to use.
+    temperature = 0.5
+
+    # Base inference parameters to use.
+    inference_config = {"temperature": temperature}
+    # Additional inference parameters to use.
+    # top_k = 200
+    # additional_model_fields = {"top_k": top_k}
+
+    # Send the message.
+    response = bedrock_runtime.converse(
+        modelId=model_id,
+        messages=messages,
+        system=system_prompts,
+        inferenceConfig=inference_config,
+        # additionalModelRequestFields=additional_model_fields,
     )
-    response_body = json.loads(response.get("body").read())
 
-    results = response_body.get("outputs")[0].get("text")
-    return results
-
-
-# Call Mistral model
-def call_mistral_7b(prompt):
-    prompt_config = {
-        "prompt": prompt,
-        "max_tokens": 4096,
-        "temperature": 0.7,
-        "top_p": 0.8,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "mistral.mistral-7b-instruct-v0:2"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("outputs")[0].get("text")
-    return results
-
-
-# Call AI21 labs model
-def call_ai21(prompt):
-    prompt_config = {
-        "prompt": prompt,
-        "maxTokens": 5147,
-        "temperature": 0.7,
-        "stopSequences": [],
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "ai21.j2-ultra-v1"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("completions")[0].get("data").get("text")
-    return results
-
-
-def claude_prompt_format(prompt: str) -> str:
-    # Add headers to start and end of prompt
-    return "\n\nHuman: " + prompt + "\n\nAssistant:"
-
-
-def call_claude_sonnet(prompt):
-
-    prompt_config = {
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 4096,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                ],
-            }
-        ],
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("content")[0].get("text")
-    return results
-
-
-# Call Claude model
-def call_claude(prompt):
-    prompt_config = {
-        "prompt": claude_prompt_format(prompt),
-        "max_tokens_to_sample": 4096,
-        "temperature": 0.5,
-        "top_k": 250,
-        "top_p": 0.5,
-        "stop_sequences": [],
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "anthropic.claude-v2:1"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("completion")
-    return results
-
-
-# Call Cohere model
-def call_cohere(prompt):
-    prompt_config = {
-        "prompt": prompt,
-        "max_tokens": 2048,
-        "temperature": 0.7,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "cohere.command-text-v14"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("generations")[0].get("text")
-    return results
-
-
-# Call Titan model
-def call_titan(prompt):
-    prompt_config = {
-        "inputText": prompt,
-        "textGenerationConfig": {
-            "maxTokenCount": 4096,
-            "stopSequences": [],
-            "temperature": 0,
-            "topP": 1,
-        },
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "amazon.titan-text-express-v1"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("results")[0].get("outputText")
-    return results
-
-
-def call_llama2(prompt):
-    prompt_config = {
-        "prompt": prompt,
-        "max_gen_len": 2048,
-        "top_p": 0.9,
-        "temperature": 0.2,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "meta.llama2-13b-chat-v1"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body["generation"].strip()
-    return results
-
-
-def call_llama3_70b(prompt):
-
-    llama_prompt = f"""
-<|begin_of_text|>
-<|start_header_id|>user<|end_header_id|>
-{prompt}
-<|eot_id|>
-"""
-
-    prompt_config = {
-        "prompt": llama_prompt,
-        "max_gen_len": 2048,
-        "top_p": 0.9,
-        "temperature": 0.7,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "meta.llama3-70b-instruct-v1:0"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body["generation"].strip()
-    return results
-
-
-def call_llama3_8b(prompt):
-
-    llama_prompt = f"""
-<|begin_of_text|>
-<|start_header_id|>user<|end_header_id|>
-{prompt}
-<|eot_id|>
-"""
-
-    prompt_config = {
-        "prompt": llama_prompt,
-        "max_gen_len": 2048,
-        "top_p": 0.9,
-        "temperature": 0.7,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "meta.llama3-8b-instruct-v1:0"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body["generation"].strip()
-    return results
-
-
-def call_command_r_plus(prompt):
-
-    prompt_config = {
-        "message": prompt,
-        "max_tokens": 4096,
-        "chat_history": [],
-        "temperature": 0.7,
-    }
-
-    body = json.dumps(prompt_config)
-
-    modelId = "cohere.command-r-plus-v1:0"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
-    )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("text")
-    return results
+    # Log token usage.
+    token_usage = response["usage"]
+    print(f"Input tokens: {token_usage['inputTokens']}")
+    print(f"Output tokens: {token_usage['outputTokens']}")
+    print(f"Total tokens: {token_usage['totalTokens']}")
+    print(f"Stop reason: {response['stopReason']}")
+
+    text_response = response["output"]["message"]["content"][0]["text"]
+
+    return text_response
+
+
+model_ids = [
+    "anthropic.claude-3-sonnet-20240229-v1:0",
+    "anthropic.claude-3-haiku-20240307-v1:0",
+    "meta.llama3-8b-instruct-v1:0",
+    "meta.llama3-70b-instruct-v1:0",
+    "mistral.mistral-large-2402-v1:0",
+    "mistral.mixtral-8x7b-instruct-v0:1",
+]
 
 
 def summarize_text(text):
     """
     Function to summarize text using a generative AI model.
     """
-    prompt = f"Summarize the following text in 50 words or less: {text}"
-    result = call_titan(prompt)
+
+    model_id = "meta.llama3-70b-instruct-v1:0"
+    # Setup the system prompts and messages to send to the model.
+    system_prompts = [
+        {"text": "You are an app that creates summaries of text in 50 words or less."}
+    ]
+    message_1 = {
+        "role": "user",
+        "content": [{"text": f"Summarize the following text: {text}."}],
+    }
+
+    messages = [message_1]
+
+    result = generate_conversation(model_id, system_prompts, messages)
+
     return result
 
 
@@ -314,8 +91,23 @@ def sentiment_analysis(text):
     """
     Function to return a JSON object of sentiment from a given text.
     """
-    prompt = f"Giving the following text, return a JSON object of sentiment analysis. text: {text} "
-    result = call_llama3_70b(prompt)
+
+    model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
+    # Setup the system prompts and messages to send to the model.
+    system_prompts = [
+        {
+            "text": "You are a bot that takes text and returns a JSON object of sentiment analysis."
+        }
+    ]
+    message_1 = {
+        "role": "user",
+        "content": [{"text": f"{text}"}],
+    }
+
+    messages = [message_1]
+
+    result = generate_conversation(model_id, system_prompts, messages)
+
     return result
 
 
@@ -323,8 +115,23 @@ def perform_qa(question, text):
     """
     Function to perform a Q&A operation based on the provided text.
     """
-    prompt = f"Given the following text, answer the question. If the answer is not in the text, 'say you do not know': {question} text: {text} "
-    result = call_claude_sonnet(prompt)
+
+    model_id = "mistral.mistral-large-2402-v1:0"
+    # Setup the system prompts and messages to send to the model.
+    system_prompts = [
+        {
+            "text": f"Given the following text, answer the question. If the answer is not in the text, 'say you do not know'. Here is the text: {text}"
+        }
+    ]
+    message_1 = {
+        "role": "user",
+        "content": [{"text": f"{question}"}],
+    }
+
+    messages = [message_1]
+
+    result = generate_conversation(model_id, system_prompts, messages)
+
     return result
 
 
@@ -334,7 +141,7 @@ if __name__ == "__main__":
 
     print("\n=== Summarization Example ===")
     summary = summarize_text(text)
-    print(f"Summary:\n {summary}")
+    print(f"Summary:\n{summary}")
     time.sleep(2)
 
     print("\n=== Sentiment Analysis Example ===")
@@ -347,16 +154,16 @@ if __name__ == "__main__":
     q1 = "How many companies have models in Amazon Bedrock?"
     print(q1)
     answer = perform_qa(q1, text)
-    print(f"Answer: {answer}")
+    print(f"Answer: {answer}\n")
     time.sleep(2)
 
     q2 = "Can Amazon Bedrock support RAG?"
     print(q2)
     answer = perform_qa(q2, text)
-    print(f"Answer: {answer}")
+    print(f"Answer: {answer}\n")
     time.sleep(2)
 
     q3 = "When was Amazon Bedrock announced?"
     print(q3)
     answer = perform_qa(q3, text)
-    print(f"Answer: {answer}")
+    print(f"Answer: {answer}\n")
