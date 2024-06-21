@@ -1,8 +1,9 @@
-import streamlit as st
-import boto3
-import json
 import base64
 import io
+import json
+
+import boto3
+import streamlit as st
 from PIL import Image
 
 st.title("Building with Bedrock")  # Title of the application
@@ -132,7 +133,13 @@ def main():
 
     bedrock_client = initialize_bedrock_client()
 
-    model = st.selectbox("Select model", ["Stable Diffusion", "Amazon Titan"])
+    model = st.selectbox(
+        "Select model",
+        [
+            "Amazon Titan",
+            "Stable Diffusion",
+        ],
+    )
 
     if model == "Amazon Titan":
         prompt = get_prompt()

@@ -1,10 +1,11 @@
-import boto3
-import json
 import base64
 import io
+import json
 import os
-from PIL import Image
+
+import boto3
 import streamlit as st
+from PIL import Image
 
 REGION = "us-west-2"
 
@@ -141,7 +142,13 @@ def update_image_pipeline(user_image, change_prompt, model):
 
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Generation Demo - Image to Image")
-model = st.selectbox("Select model", ["Stable Diffusion", "Amazon Titan"])
+model = st.selectbox(
+    "Select model",
+    [
+        "Amazon Titan",
+        "Stable Diffusion",
+    ],
+)
 
 
 # Streamlit file uploader for only for images

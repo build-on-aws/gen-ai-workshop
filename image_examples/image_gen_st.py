@@ -1,7 +1,7 @@
-import streamlit as st
-import boto3
 import json
 
+import boto3
+import streamlit as st
 
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Generation Demo")
@@ -111,4 +111,4 @@ def generate_image_titan(text):
     return results
 
 
-model = st.selectbox("Select model", ["Stable Diffusion", "Amazon Titan"])
+model = st.selectbox("Select model", ["Amazon Titan", "Stable Diffusion"])
