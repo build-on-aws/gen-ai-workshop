@@ -112,3 +112,38 @@ def generate_image_titan(text):
 
 
 model = st.selectbox("Select model", ["Amazon Titan", "Stable Diffusion"])
+prompt = st.text_input("Enter prompt")
+# List of Stable Diffusion Preset Styles
+sd_presets = [
+    "None", "3d-model", "analog-film", "anime", "cinematic", "comic-book",
+    "digital-art", "enhance", "fantasy-art", "isometric", "line-art",
+    "low-poly", "modeling-compound", "neon-punk", "origami", "photographic",
+    "pixel-art", "tile-texture"
+]
+
+# Select box for styles (only if Stable Diffusion is selected)
+if model == "Stable Diffusion":
+    style = st.selectbox("Select Style", sd_presets)
+else:
+    style = "None"
+import base64
+from PIL import Image
+from io import BytesIO
+
+def base64_to_pil(base64_str):
+    """
+    Converts a base64 string to a PIL Image object.
+    """
+    image_data = base64.b64decode(base64_str)
+    image = Image.open(BytesIO(image_data))
+    return image
+if st.button("Generate Image"):
+    if model == "Amazon Titan":
+        image_base64 = generate_image_titan(prompt)
+    else:
+        image_base64 = generate_image_sd(prompt, style)
+    # Convert base64 to PIL Image
+    image = base64_to_pil(image_base64)
+    
+    # Display the image
+    st.image(image)

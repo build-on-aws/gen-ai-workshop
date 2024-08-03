@@ -50,7 +50,6 @@ def base64_to_pil(base64_string):
     return image
 
 
-# Bedrock api call to stable diffusion
 def sd_update_image(change_prompt, init_image_b64):
     """
     Purpose:
@@ -143,15 +142,22 @@ def update_image_pipeline(user_image, change_prompt, model):
 
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Generation Demo - Image to Image")
+model = st.selectbox(
+    "Select model",
+    [
+        "Amazon Titan",
+        "Stable Diffusion",
+    ],
+)
 
-model = st.selectbox("Select model", ["Amazon Titan", "Stable Diffusion"])
 
-# TODO insert your comments
+user_image = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+change_prompt = st.text_input("Enter prompt to change image")
 
+# Creat two columns, one to show the uploaded image, another for the new image
+col1, col2 = st.columns(2)
 
-col1, col2 = st.columns(2)  # Column 1 for input image, Column 2 for output image
-
-# show user image
+# Show the uploaded image
 if user_image is not None:
     user_image = Image.open(user_image)
     col1.image(user_image)

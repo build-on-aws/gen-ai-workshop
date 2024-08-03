@@ -73,6 +73,12 @@ col1, col2 = st.columns(2)
 if user_image is not None:
     user_image = Image.open(user_image)
     # TODO Finish App with Q
+    col1.image(user_image, use_column_width=True)
+
+    if col1.button("Get caption"):
+        base64_image = pil_to_base64(user_image)
+        caption = call_claude_sonnet(base64_image)
+        col2.write(caption)
 
 else:
     col2.write("No image uploaded")

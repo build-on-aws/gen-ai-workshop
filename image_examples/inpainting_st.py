@@ -44,6 +44,7 @@ def gen_mask_from_image(user_image):
     return mask
 
 
+
 def image_to_base64(img) -> str:
     """Convert a PIL Image or local image file path to a base64 string for Amazon Bedrock"""
     if isinstance(img, str):
@@ -188,14 +189,20 @@ change_prompt = st.text_input("Enter prompt to change image")
 # Create three columns, one to show the uploaded image, 2 for the mask, and 3 for the new image
 col1, col2, col3 = st.columns(3)
 
-# Show the uploaded image
 if user_image is not None:
     user_image = Image.open(user_image)
     col1.image(user_image)
 
     if model == "Stable Diffusion":
-        mask = Image.open("sd_mask.png") 
+        mask = Image.open("sd_mask.png")
     else:
         mask = gen_mask_from_image(user_image)
-    
-    # TODO Finish App with Q
+
+    col2.image(mask)
+    if st.button("Update Image"):
+        update_image = inpaint_image_pipeline(user_image, change_prompt, mask, model)
+        col3.image(update_image)
+else:
+    col3.write("Please upload an image to get started")
+
+
