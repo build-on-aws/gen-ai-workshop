@@ -71,16 +71,15 @@ def summarize_text(text):
     """
 
     model_id = "meta.llama3-70b-instruct-v1:0"
-    # Setup the system prompts and messages to send to the model.
     system_prompts = [
         {"text": "You are an app that creates summaries of text in 50 words or less."}
     ]
-    message_1 = {
+    messages = {
         "role": "user",
         "content": [{"text": f"Summarize the following text: {text}."}],
     }
 
-    messages = [message_1]
+    messages = [messages]
 
     result = generate_conversation(model_id, system_prompts, messages)
 
@@ -92,7 +91,18 @@ def sentiment_analysis(text):
     Function to return a JSON object of sentiment from a given text.
     """
     # TODO Can you fill in the function?
-    result = None
+    model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
+    system_prompts = [
+        {
+            "text": "You are a sentiment analysis bot that returns a JSON object of sentiment from a given text."
+        }
+    ]
+    messages = [{
+        "role": "user",
+        "content": [{"text": f"Analyze the sentiment of the following text: {text}."}],
+    }]
+    result = generate_conversation(model_id, system_prompts, messages)
+    # result = None
     return result
 
 
@@ -101,7 +111,20 @@ def perform_qa(question, text):
     Function to perform a Q&A operation based on the provided text.
     """
     # TODO Can you fill in the function?
-    result = None
+    model_id = "mistral.mistral-large-2402-v1:0"
+    system_prompts = [
+        {
+            "text": f"Please you following this text: {text}."
+        }
+    ]
+    messages = [{
+        "role": "user",
+        "content": [
+            {"text": f"Question: {question}"}
+        ],
+    }]
+    result = generate_conversation(model_id, system_prompts, messages)
+    # result = None
     return result
 
 
