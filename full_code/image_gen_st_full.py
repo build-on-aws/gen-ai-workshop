@@ -95,7 +95,7 @@ def generate_image_titan(bedrock_client, text):
 
     body = json.dumps(body)
 
-    modelId = "amazon.titan-image-generator-v1"
+    modelId = "amazon.titan-image-generator-v2:0"
     accept = "application/json"
     contentType = "application/json"
 

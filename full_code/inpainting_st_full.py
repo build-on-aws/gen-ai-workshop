@@ -1,11 +1,11 @@
-import boto3
-import json
 import base64
 import io
+import json
 import os
-from PIL import Image
+
+import boto3
 import streamlit as st
-from PIL import ImageOps
+from PIL import Image, ImageOps
 
 REGION = "us-west-2"
 
@@ -143,7 +143,7 @@ def titan_inpaint_image(change_prompt, init_image_b64, mask):
 
     body = json.dumps(body)
 
-    modelId = "amazon.titan-image-generator-v1"
+    modelId = "amazon.titan-image-generator-v2:0"
     accept = "application/json"
     contentType = "application/json"
 

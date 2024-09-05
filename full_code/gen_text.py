@@ -56,12 +56,13 @@ def generate_conversation(model_id, system_prompts, messages):
 
 
 model_ids = [
+    "anthropic.claude-3-5-sonnet-20240620-v1:0"
     "anthropic.claude-3-sonnet-20240229-v1:0",
     "anthropic.claude-3-haiku-20240307-v1:0",
-    "meta.llama3-8b-instruct-v1:0",
-    "meta.llama3-70b-instruct-v1:0",
+    "meta.llama3-1-70b-instruct-v1:0",
+    "meta.llama3-1-405b-instruct-v1:0",
+    "meta.llama3-1-8b-instruct-v1:0",
     "mistral.mistral-large-2402-v1:0",
-    "mistral.mixtral-8x7b-instruct-v0:1",
 ]
 
 
@@ -70,7 +71,7 @@ def summarize_text(text):
     Function to summarize text using a generative AI model.
     """
 
-    model_id = "meta.llama3-70b-instruct-v1:0"
+    model_id = "meta.llama3-1-70b-instruct-v1:0"
     # Setup the system prompts and messages to send to the model.
     system_prompts = [
         {"text": "You are an app that creates summaries of text in 50 words or less."}

@@ -1,10 +1,10 @@
-import streamlit as st
-import boto3
-import json
 import base64
 import io
-from PIL import Image
+import json
 
+import boto3
+import streamlit as st
+from PIL import Image
 
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Understanding Demo")
@@ -43,7 +43,7 @@ def call_claude_sonnet(base64_string):
 
     body = json.dumps(prompt_config)
 
-    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
+    modelId = "anthropic.claude-3-5-sonnet-20240620-v1:0"
     accept = "application/json"
     contentType = "application/json"
 
@@ -54,7 +54,6 @@ def call_claude_sonnet(base64_string):
 
     results = response_body.get("content")[0].get("text")
     return results
-
 
 
 # function to convert PIL image to base64 string

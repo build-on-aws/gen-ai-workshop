@@ -109,7 +109,7 @@ def titan_update_image(change_prompt, init_image_b64):
 
     body = json.dumps(body)
 
-    modelId = "amazon.titan-image-generator-v1"
+    modelId = "amazon.titan-image-generator-v2:0"
     accept = "application/json"
     contentType = "application/json"
 

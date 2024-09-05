@@ -1,12 +1,11 @@
-import boto3
-import json
 import base64
 import io
+import json
 import os
-from PIL import Image
-import streamlit as st
-from PIL import ImageOps
 
+import boto3
+import streamlit as st
+from PIL import Image, ImageOps
 
 REGION = "us-west-2"
 
@@ -143,7 +142,7 @@ def titan_inpaint_image(change_prompt, init_image_b64, mask):
 
     body = json.dumps(body)
 
-    modelId = "amazon.titan-image-generator-v1"
+    modelId = "amazon.titan-image-generator-v2:0"
     accept = "application/json"
     contentType = "application/json"
 
@@ -174,6 +173,7 @@ def inpaint_image_pipeline(user_image, change_prompt, mask, model):
 
     return updated_image
 
+
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Generation Demo - Inpainting")
 
@@ -194,8 +194,8 @@ if user_image is not None:
     col1.image(user_image)
 
     if model == "Stable Diffusion":
-        mask = Image.open("sd_mask.png") 
+        mask = Image.open("sd_mask.png")
     else:
         mask = gen_mask_from_image(user_image)
-    
+
     # TODO Finish App with Q
