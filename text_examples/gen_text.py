@@ -63,6 +63,9 @@ model_ids = [
     "meta.llama3-1-405b-instruct-v1:0",
     "meta.llama3-1-8b-instruct-v1:0",
     "mistral.mistral-large-2402-v1:0",
+    "us.amazon.nova-pro-v1:0",
+    "us.amazon.nova-lite-v1:0",
+    "us.amazon.nova-micro-v1:0",
 ]
 
 
@@ -71,7 +74,7 @@ def summarize_text(text):
     Function to summarize text using a generative AI model.
     """
 
-    model_id = "meta.llama3-1-70b-instruct-v1:0"
+    model_id = "us.amazon.nova-pro-v1:0"
     # Setup the system prompts and messages to send to the model.
     system_prompts = [
         {"text": "You are an app that creates summaries of text in 50 words or less."}
