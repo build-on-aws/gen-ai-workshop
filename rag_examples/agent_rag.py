@@ -1,10 +1,10 @@
-import boto3
 import random
 
+import boto3
 
 AGENT_ID = "INSERT_AGENT_ID"
 QUERY = "What are some features of Amazon S3?"
-REGION = "us-west-2"
+REGION = "us-east-1"
 
 # Setup bedrock
 bedrock_agent_runtime = boto3.client(

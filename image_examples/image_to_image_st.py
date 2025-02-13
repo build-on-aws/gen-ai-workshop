@@ -7,7 +7,7 @@ import boto3
 import streamlit as st
 from PIL import Image
 
-REGION = "us-west-2"
+REGION = "us-east-1"
 
 # Define bedrock
 bedrock_runtime = boto3.client(
@@ -50,71 +50,41 @@ def base64_to_pil(base64_string):
     return image
 
 
-# Bedrock api call to stable diffusion
-def sd_update_image(change_prompt, init_image_b64):
+def nova_update_image(change_prompt, init_image_b64):
     """
     Purpose:
-        Uses Bedrock API to generate an Image
+        Uses Bedrock API to generate an Image using Nova
     Args/Requests:
          text: Prompt
-         style: style for image
     Return:
         image: base64 string of image
     """
-    body = {
-        "text_prompts": ([{"text": change_prompt, "weight": 1.0}]),
-        "cfg_scale": 10,
-        "init_image": init_image_b64,
-        "seed": 0,
-        "start_schedule": 0.6,
-        "steps": 50,
-    }
 
-    body = json.dumps(body)
-
-    modelId = "stability.stable-diffusion-xl-v1"
-    accept = "application/json"
-    contentType = "application/json"
-
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
+    body = json.dumps(
+        {
+            "taskType": "IMAGE_VARIATION",
+            "imageVariationParams": {
+                "text": change_prompt,
+                "images": [init_image_b64],
+                "similarityStrength": 0.7,  # Range: 0.2 to 1.0
+            },
+            "imageGenerationConfig": {
+                "numberOfImages": 1,
+                "height": 512,
+                "width": 512,
+                "cfgScale": 8.0,
+            },
+        }
     )
-    response_body = json.loads(response.get("body").read())
-
-    results = response_body.get("artifacts")[0].get("base64")
-    return results
-
-
-def titan_update_image(change_prompt, init_image_b64):
-    """
-    Purpose:
-        Uses Bedrock API to generate an Image using Titan
-    Args/Requests:
-         text: Prompt
-    Return:
-        image: base64 string of image
-    """
-    body = {
-        "imageVariationParams": {"text": change_prompt, "images": [init_image_b64]},
-        "taskType": "IMAGE_VARIATION",
-        "imageGenerationConfig": {
-            "cfgScale": 10,
-            "seed": 0,
-            "quality": "standard",
-            "width": 512,
-            "height": 512,
-            "numberOfImages": 1,
-        },
-    }
 
     body = json.dumps(body)
 
-    modelId = "amazon.titan-image-generator-v2:0"
+    model_id = "amazon.nova-canvas-v1:0"
     accept = "application/json"
     contentType = "application/json"
 
     response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
+        body=body, modelId=model_id, accept=accept, contentType=contentType
     )
     response_body = json.loads(response.get("body").read())
 
@@ -127,10 +97,8 @@ def update_image_pipeline(user_image, change_prompt, model):
     # Turn image to base64 string
     init_image_b64 = image_to_base64(user_image)
 
-    if model == "Stable Diffusion":
-        updated_image = sd_update_image(change_prompt, init_image_b64)
-    elif model == "Amazon Titan":
-        updated_image = titan_update_image(change_prompt, init_image_b64)
+    if model == "Amazon Nova":
+        updated_image = nova_update_image(change_prompt, init_image_b64)
 
     # convert updated_image to PIL image
     updated_image = base64_to_pil(updated_image)
@@ -144,7 +112,7 @@ def update_image_pipeline(user_image, change_prompt, model):
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Generation Demo - Image to Image")
 
-model = st.selectbox("Select model", ["Amazon Titan", "Stable Diffusion"])
+model = st.selectbox("Select model", ["Amazon Nova"])
 
 # TODO insert your comments
 

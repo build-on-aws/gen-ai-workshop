@@ -8,3 +8,5 @@ transformers
 sentence_transformers
 boto3
 botocore
+langchain-aws
+langchain-unstructured

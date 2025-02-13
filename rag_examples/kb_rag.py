@@ -2,8 +2,8 @@ import boto3
 
 KB_ID = "TODO"
 QUERY = "What can you tell me about Amazon EC2?"
-REGION = "us-west-2"
-MODEL = "anthropic.claude-3-sonnet-20240229-v1:0"
+REGION = "us-east-1"
+MODEL = "us.amazon.nova-lite-v1:0"
 NUM_RESULTS = 10
 
 # Setup bedrock

@@ -1,25 +1,20 @@
-import json
 import os
+
 import boto3
-from langchain_community.embeddings import BedrockEmbeddings
-from langchain_community.vectorstores import FAISS
-
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import (
-    UnstructuredFileLoader,
-)
-
-REGION = "us-west-2"
+from langchain_aws import BedrockEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_unstructured import UnstructuredLoader
 
 # Setup bedrock
 bedrock_runtime = boto3.client(
     service_name="bedrock-runtime",
-    region_name="us-west-2",
+    region_name="us-east-1",
 )
 
 
 def chunk_doc_to_text(doc_loc: str):
-    loader = UnstructuredFileLoader(doc_loc)
+    loader = UnstructuredLoader(doc_loc)
     docs = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
@@ -28,34 +23,50 @@ def chunk_doc_to_text(doc_loc: str):
     return texts
 
 
-def call_claude_sonnet(prompt):
+def generate_conversation(model_id, system_prompts, messages):
+    """
+    Sends messages to a model.
+    Args:
+        bedrock_client: The Boto3 Bedrock runtime client.
+        model_id (str): The model ID to use.
+        system_prompts (JSON) : The system prompts for the model to use.
+        messages (JSON) : The messages to send to the model.
 
-    prompt_config = {
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 4096,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                ],
-            }
-        ],
-    }
+    Returns:
+        response (JSON): The conversation that the model generated.
 
-    body = json.dumps(prompt_config)
+    """
 
-    modelId = "anthropic.claude-3-sonnet-20240229-v1:0"
-    accept = "application/json"
-    contentType = "application/json"
+    print(f"Generating message with model {model_id}")
 
-    response = bedrock_runtime.invoke_model(
-        body=body, modelId=modelId, accept=accept, contentType=contentType
+    # Inference parameters to use.
+    temperature = 0.5
+
+    # Base inference parameters to use.
+    inference_config = {"temperature": temperature}
+    # Additional inference parameters to use.
+    # top_k = 200
+    # additional_model_fields = {"top_k": top_k}
+
+    # Send the message.
+    response = bedrock_runtime.converse(
+        modelId=model_id,
+        messages=messages,
+        system=system_prompts,
+        inferenceConfig=inference_config,
+        # additionalModelRequestFields=additional_model_fields,
     )
-    response_body = json.loads(response.get("body").read())
 
-    results = response_body.get("content")[0].get("text")
-    return results
+    # Log token usage.
+    token_usage = response["usage"]
+    print(f"Input tokens: {token_usage['inputTokens']}")
+    print(f"Output tokens: {token_usage['outputTokens']}")
+    print(f"Total tokens: {token_usage['totalTokens']}")
+    print(f"Stop reason: {response['stopReason']}")
+
+    text_response = response["output"]["message"]["content"][0]["text"]
+
+    return text_response
 
 
 def rag_with_bedrock(query):
@@ -90,7 +101,23 @@ def rag_with_bedrock(query):
     Question: {query}
     Answer:"""
 
-    return call_claude_sonnet(prompt)
+    model_id = "us.amazon.nova-pro-v1:0"
+    # Setup the system prompts and messages to send to the model.
+    system_prompts = [
+        {
+            "text": "You are an expert AWS Solutions Architect that helps customers solve their problems."
+        }
+    ]
+    message_1 = {
+        "role": "user",
+        "content": [{"text": f"{prompt}"}],
+    }
+
+    messages = [message_1]
+
+    result = generate_conversation(model_id, system_prompts, messages)
+
+    return result
 
 
 query = "What can you tell me about Amazon RDS?"

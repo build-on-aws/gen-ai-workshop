@@ -9,7 +9,7 @@ from PIL import Image
 st.title("Building with Bedrock")  # Title of the application
 st.subheader("Image Understanding Demo")
 
-REGION = "us-west-2"
+REGION = "us-east-1"
 
 # Define bedrock
 bedrock_runtime = boto3.client(
@@ -43,7 +43,7 @@ def call_claude_sonnet(base64_string):
 
     body = json.dumps(prompt_config)
 
-    modelId = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+    modelId = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
     accept = "application/json"
     contentType = "application/json"
 
