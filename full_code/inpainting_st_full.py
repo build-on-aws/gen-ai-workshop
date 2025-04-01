@@ -7,7 +7,7 @@ import boto3
 import streamlit as st
 from PIL import Image, ImageOps
 
-REGION = "us-west-2"
+REGION = "us-east-1"
 
 # Define bedrock
 bedrock_runtime = boto3.client(

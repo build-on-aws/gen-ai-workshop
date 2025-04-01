@@ -6,7 +6,7 @@ import json
 import boto3
 
 
-def create_bedrock_client(region="us-west-2"):
+def create_bedrock_client(region="us-east-1"):
     """Create a Bedrock Runtime client in the specified AWS Region."""
     return boto3.client(
         "bedrock-runtime",
