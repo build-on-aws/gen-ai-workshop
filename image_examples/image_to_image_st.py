@@ -77,8 +77,6 @@ def nova_update_image(change_prompt, init_image_b64):
         }
     )
 
-    body = json.dumps(body)
-
     model_id = "amazon.nova-canvas-v1:0"
     accept = "application/json"
     contentType = "application/json"
